@@ -1,5 +1,8 @@
 package ait.shop.model.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -8,11 +11,28 @@ import java.util.Objects;
  * {@code @date} 02.09.2025
  */
 
+@Entity
+@Table(name = "product")
+@Schema(description = "Class that describes Product")
 public class Product {
 
+    @Schema(description = "Product unique identifier", example = "777", accessMode = Schema.AccessMode.READ_ONLY)
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Schema(description = "Product title", example = "Banana")
+    @Column(name = "title")
     private String title;
+
+    @Schema(description = "Product price", example = "8.50")
+    @Column(name = "price")
     private BigDecimal price;
+
+    // CreatedAt -> created_at
+    @Schema(description = "Id product available", accessMode = Schema.AccessMode.READ_ONLY)
+    @Column
     private boolean active;
 
     @Override

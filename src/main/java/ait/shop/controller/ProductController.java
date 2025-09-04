@@ -2,8 +2,16 @@ package ait.shop.controller;
 
 import ait.shop.model.entity.Product;
 import ait.shop.service.interfaces.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@Tag(name = "Product Controller", description = "Controller for operations with products")
 public class ProductController {
 
     public final ProductService service;
@@ -24,8 +33,12 @@ public class ProductController {
     }
 
     // POST /products
+    @Operation(summary = "Create product", description = "Add new product.", tags = { "Product" })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "successful operation",
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)),
+                    @Content(mediaType = "application/xml", schema = @Schema(implementation = Product.class)) }) })
     @PostMapping
-    public Product saveProduct(@RequestBody Product product) {
+    public Product saveProduct(@Parameter(description = "Create product object") @RequestBody Product product) {
         return service.saveProduct(product);
     }
 
@@ -34,30 +47,54 @@ public class ProductController {
     // GET /products/77
     @GetMapping("/{id}")
     public Product getById(@PathVariable Long id) {
-        // Todo обращаемся к сервису и запрашиваем продукт по id
-        return null;
+        return service.getById(id);
     }
 
     //  GET /products
     @GetMapping
     public List<Product> getAll() {
-        // Todo к сервису и запрашиваем все продукты
-        return List.of();
+        return service.getAllActiveProducts();
     }
 
     // Update: PUT -> /products/id и в теле поля, которые мы хотим поменять
     @PutMapping("/{id}")
     public Product update (@PathVariable Long id, @RequestBody Product product) {
-        // Todo Обращаемся к сервису для обновления продукта
-        return new Product();
+        return service.update(id, product);
     }
 
     // Delete: DELETE -> products/id
     @DeleteMapping("/{productId}")
     public Product remove(@PathVariable("productId") Long id) {
-        // Todo к сервису для удаления продукта
-        return null;
+        return service.deleteById(id);
     }
+
+    // DELETE -> /products/by-title?title=Banana
+    // DELETE -> /products/by-title/Banana - если бы использовали переменную пути
+    @DeleteMapping("/by-title")
+    public Product removeByTitle(@RequestParam String title) {
+        return service.deleteByTitle(title);
+    }
+
+    @PutMapping("/restore/{id}")
+    public Product restoreById(@PathVariable Long id) {
+        return service.restoreProductById(id);
+    }
+
+    @GetMapping("/count")
+    public long getProductCount() {
+        return service.getProductCount();
+    }
+
+    @GetMapping("/total-price")
+    public BigDecimal getTotalPrice() {
+        return service.getTotalPrice();
+    }
+
+    @GetMapping("/average-price")
+    public BigDecimal getAveragePrice() {
+        return service.getAveragePrice();
+    }
+
 
 }
 
