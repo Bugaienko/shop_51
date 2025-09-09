@@ -1,5 +1,6 @@
 package ait.shop.service.interfaces;
 
+import ait.shop.model.dto.ProductDTO;
 import ait.shop.model.entity.Product;
 
 import java.math.BigDecimal;
@@ -12,18 +13,18 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product saveProduct(Product product);
+    ProductDTO saveProduct(ProductDTO product);
 
-    Product getById(Long id);
-    List<Product> getAllActiveProducts();
+    ProductDTO getById(Long id);
+    List<ProductDTO> getAllActiveProducts();
 
-    Product update(Long id, Product product);
+    ProductDTO update(Long id, ProductDTO product);
 
-    Product deleteById(Long id);
+    ProductDTO deleteById(Long id);
 
-    Product deleteByTitle(String title);
+    ProductDTO deleteByTitle(String title);
 
-    Product restoreProductById(Long id);
+    ProductDTO restoreProductById(Long id);
 
     long getProductCount();
 
